@@ -1,10 +1,8 @@
-import React from "react"
-
 function AppFooter() {
   return (
-    <section>
-      <h2 className="text-5xl">Footer</h2>
-    </section>
+    <footer className="mt-10">
+      <h2 className="text-5xl">Spotter</h2>
+    </footer>
   )
 }
 
