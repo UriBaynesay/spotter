@@ -10,7 +10,6 @@ import {
 import { redirect } from "next/navigation"
 import { z } from "zod"
 import { createProfile, getProfileByAuthId } from "../profile/db"
-import { Profile } from "../profile/interface"
 
 const INPUT_ERROR_MESSAGES = {
   validName: "Please enter a valid name",
@@ -86,13 +85,18 @@ const signinSchema = authSchema.omit({
   password2: true,
 })
 export const signInAction = async (
+  state: authState,
   formData: FormData
-): Promise<Profile | null> => {
+): Promise<authState> => {
   const parsedInputs = signinSchema.safeParse({
     email: formData.get("email"),
     password1: formData.get("password1"),
   })
-  if (parsedInputs.error) return null
+  if (parsedInputs.error)
+    return {
+      message: "Invalid inputs",
+      error: parsedInputs.error.flatten().fieldErrors,
+    }
   const { email, password1 } = parsedInputs.data
   let user!: User
   const auth = getAuth(app)
@@ -100,9 +104,8 @@ export const signInAction = async (
     user = (await signInWithEmailAndPassword(auth, email, password1)).user
   } catch (error) {
     console.log(error)
-    return null
+    return { message: "The email and password you passed in are incorrect." }
   }
-
   const profile = await getProfileByAuthId(user.uid)
-  return profile
+  redirect(`/profile/${profile.authId}`)
 }

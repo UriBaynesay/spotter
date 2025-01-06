@@ -27,9 +27,9 @@ export const createProfile = async (
 
 export const getProfileByAuthId = async (authId: string): Promise<Profile> => {
   const db = getFirestore(app)
-  const citiesRef = collection(db, "profile")
-  const q = query(citiesRef, where("authId", "==", authId))
+  const profilesRef = collection(db, "profile")
+  const q = query(profilesRef, where("authId", "==", authId))
   const querySnapshot = await getDocs(q)
-  if(querySnapshot.empty) throw 'Profile not found'
+  if (querySnapshot.empty) throw "Profile not found"
   return querySnapshot.docs[0].data() as Profile
 }
