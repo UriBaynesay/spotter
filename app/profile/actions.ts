@@ -12,5 +12,5 @@ export const getProfileByAuthIdAction = async (authId: string) => {
   } catch (error) {
     console.log(error)
   }
-  redirect(`/profile/${profile.id}`)
+  redirect(`/profile/${profile.authId}`)
 }

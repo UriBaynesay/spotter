@@ -1,11 +1,19 @@
+import { redirect } from "next/navigation"
+import { getProfileByAuthId } from "../db"
+
 type ProfilePageProps = {
-  authId: string
+  params: Promise<{ authId: string }>
 }
 
-function ProfilePage({ authId }: ProfilePageProps) {
+async function ProfilePage({ params }: ProfilePageProps) {
+  const authId = (await params).authId
+  const profile = await getProfileByAuthId(authId)
+  if (!profile) redirect("/")
   return (
     <main>
-      <h1></h1>
+      <h2 className="text-4xl mt-6">
+       Hello {profile.firstName} {profile.lastName}
+      </h2>
     </main>
   )
 }
