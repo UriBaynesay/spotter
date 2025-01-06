@@ -14,7 +14,6 @@ function SignupPage() {
     <main className="mt-3">
       <h3 className="text-4xl text-center">Sign up</h3>
       <form action={formAction} className="mx-auto w-[70vw] mt-6 [&>*]:mt-4">
-        {state.message && <small>{state.message}</small>}
         <div>
           <label htmlFor="first-name">First name :</label>
           <input
@@ -64,6 +63,9 @@ function SignupPage() {
           Already have an account?{" "}
           <Link href={"/auth/signin"}>Sign in here</Link>
         </small>
+        {state.message && (
+          <small className="text-red-400">{state.message}</small>
+        )}
         <button
           className="bg-gray-400 py-2 px-3 rounded-md text-white"
           type="submit"
