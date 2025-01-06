@@ -1,15 +1,8 @@
 "use server"
 
-import { app } from "@/utils/firebase"
-import {
-  createUserWithEmailAndPassword,
-  getAuth,
-  signInWithEmailAndPassword,
-  User,
-} from "firebase/auth"
 import { redirect } from "next/navigation"
 import { z } from "zod"
-import { createProfile, getProfileByAuthId } from "../profile/db"
+import { createProfile } from "../profile/db"
 
 const INPUT_ERROR_MESSAGES = {
   validName: "Please enter a valid name",
@@ -44,68 +37,26 @@ const authSchema = z.object({
   password2: z.string(),
 })
 
-export const signUpAction = async (
-  state: authState,
+const createProfileSchema = authSchema.omit({
+  password1: true,
+  password2: true,
+})
+export const createProfileAction = async (
+  authId: string,
   formData: FormData
-): Promise<authState> => {
-  const parsedInputs = authSchema.safeParse({
+) => {
+  const parsedInputs = createProfileSchema.safeParse({
     firstName: formData.get("firstName"),
     lastName: formData.get("lastName"),
     email: formData.get("email"),
-    password1: formData.get("password1"),
-    password2: formData.get("password2"),
   })
-  if (parsedInputs.error)
-    return {
-      message: "Invalid inputs",
-      error: parsedInputs.error.flatten().fieldErrors,
-    }
-  if (parsedInputs.data.password1 != parsedInputs.data.password2)
-    return { message: "Passwords don't match" }
-  const { firstName, lastName, email, password1 } = parsedInputs.data
-  const auth = getAuth(app)
-
+  if (parsedInputs.error) return
+  const { firstName, lastName, email } = parsedInputs.data
   try {
-    const { user } = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password1
-    )
-    await createProfile(firstName, lastName, email, user.uid)
+    await createProfile(firstName, lastName, email, authId)
   } catch (error) {
     console.log(error)
-    return { message: "Wasnt able to sign up" }
+    return
   }
   redirect("/auth/signin")
-}
-
-const signinSchema = authSchema.omit({
-  firstName: true,
-  lastName: true,
-  password2: true,
-})
-export const signInAction = async (
-  state: authState,
-  formData: FormData
-): Promise<authState> => {
-  const parsedInputs = signinSchema.safeParse({
-    email: formData.get("email"),
-    password1: formData.get("password1"),
-  })
-  if (parsedInputs.error)
-    return {
-      message: "Invalid inputs",
-      error: parsedInputs.error.flatten().fieldErrors,
-    }
-  const { email, password1 } = parsedInputs.data
-  let user!: User
-  const auth = getAuth(app)
-  try {
-    user = (await signInWithEmailAndPassword(auth, email, password1)).user
-  } catch (error) {
-    console.log(error)
-    return { message: "The email and password you passed in are incorrect." }
-  }
-  const profile = await getProfileByAuthId(user.uid)
-  redirect(`/profile/${profile.authId}`)
 }

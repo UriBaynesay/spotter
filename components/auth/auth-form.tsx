@@ -1,10 +1,4 @@
-import { authState } from "@/app/auth/actions"
-
-type AuthProps = {
-  state: authState
-}
-
-function AuthForm({ state }: AuthProps) {
+function AuthForm() {
   return (
     <>
       <div>
@@ -16,11 +10,7 @@ function AuthForm({ state }: AuthProps) {
           placeholder="Email"
           name="email"
           required
-          aria-describedby="email-error"
         />
-        {state.error?.email && (
-          <small id="email-error">{state.error.email}</small>
-        )}
       </div>
       <div>
         <label htmlFor="password1">Password :</label>
@@ -31,11 +21,7 @@ function AuthForm({ state }: AuthProps) {
           placeholder="Password"
           name="password1"
           required
-          aria-describedby="password1-error"
         />
-        {state.error?.password1 && (
-          <small id="password1-error">{state.error.password1}</small>
-        )}
       </div>
     </>
   )
