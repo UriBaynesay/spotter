@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${kanit.className} antialiased min-h-dvh flex flex-col items-stretch px-2 tracking-wide`}
+        className={`${kanit.className} text-gray-800 antialiased min-h-dvh flex flex-col px-2 tracking-wide`}
       >
         <AppHeader />
         {children}

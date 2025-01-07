@@ -20,3 +20,18 @@ a:hover {
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+
+label {
+  display: block;
+}
+
+button {
+  margin-top: 1rem;
+  color: white;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  background-color: hsl(218, 11%, 65%);
+  border-radius: .375rem;
+}
